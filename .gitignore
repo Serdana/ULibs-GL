@@ -1,0 +1,13 @@
+# eclipse
+bin
+*.launch
+*.settings
+*.metadata
+*.classpath
+*.project
+*.recommenders
+*.lnk
+*.url
+*.factorypath
+\lib
+\build
