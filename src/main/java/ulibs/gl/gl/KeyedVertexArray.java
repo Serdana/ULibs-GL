@@ -11,6 +11,8 @@ import org.lwjgl.opengl.GL46;
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.gl.utils.BufferUtils;
+import main.java.ulibs.gl.utils.exceptions.GLException;
+import main.java.ulibs.gl.utils.exceptions.GLException.Reason;
 
 /** Similar to {@link VertexArray} but instead has control over the elements inside
  * @author -Unknown-
@@ -131,7 +133,7 @@ public class KeyedVertexArray<T> {
 	 * Must be called before using! */
 	public void bind() {
 		if (!wasSetup) {
-			Console.print(WarningType.FatalError, "KeyedVertexArray was not setup!", true);
+			Console.print(WarningType.FatalError, "KeyedVertexArray was not setup!", new GLException(Reason.notSetupVertexArray));
 		}
 		
 		GL46.glBindVertexArray(vao);

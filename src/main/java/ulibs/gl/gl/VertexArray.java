@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL46;
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.gl.utils.BufferUtils;
+import main.java.ulibs.gl.utils.exceptions.GLException;
+import main.java.ulibs.gl.utils.exceptions.GLException.Reason;
 
 public class VertexArray extends QuadData {
 	protected int vao, vbo, ibo, tbo;
@@ -48,7 +50,7 @@ public class VertexArray extends QuadData {
 	
 	public void bind() {
 		if (!wasSetup) {
-			Console.print(WarningType.FatalError, "VertexArray was not setup!", true);
+			Console.print(WarningType.FatalError, "VertexArray was not setup!", new GLException(Reason.notSetupVertexArray));
 		}
 		
 		GL46.glBindVertexArray(vao);

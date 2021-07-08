@@ -18,6 +18,8 @@ import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.gl.math.Matrix4f;
 
+//TODO make better shader system! idk, make this abstract and add methods to make things easier
+
 public class Shader {
 	public static final int VERTEX_ATTRIB = 0;
 	public static final int TCOORD_ATTRIB = 1;
@@ -37,9 +39,9 @@ public class Shader {
 	
 	public void setup() {
 		bind();
-		setUniformMatrix4f("pr_matrix", prMatrix);
+		set("pr_matrix", prMatrix);
 		if (GL46.glGetUniformLocation(id, "cl") != -1) {
-			setUniform4f("cl", Shader.colorToVec4(Color.WHITE));
+			set("cl", Shader.colorToVec4(Color.WHITE));
 		}
 		GL46.glUseProgram(0);
 	}
@@ -48,31 +50,31 @@ public class Shader {
 		GL46.glUseProgram(id);
 	}
 	
-	public void setUniform1i(String name, int value) {
+	public void set(String name, int value) {
 		GL46.glUniform1i(getUniform(name), value);
 	}
 	
-	public void setUniform1iv(String name, int[] value) {
+	public void set(String name, int[] value) {
 		GL46.glUniform1iv(getUniform(name), value);
 	}
 	
-	public void setUniform1f(String name, float value) {
+	public void set(String name, float value) {
 		GL46.glUniform1f(getUniform(name), value);
 	}
 	
-	public void setUniform2f(String name, Vec2f vec) {
+	public void set(String name, Vec2f vec) {
 		GL46.glUniform2f(getUniform(name), vec.getX(), vec.getY());
 	}
 	
-	public void setUniform3f(String name, Vec3f vec) {
+	public void set(String name, Vec3f vec) {
 		GL46.glUniform3f(getUniform(name), vec.getX(), vec.getY(), vec.getZ());
 	}
 	
-	public void setUniform4f(String name, Vec4f vec) {
+	public void set(String name, Vec4f vec) {
 		GL46.glUniform4f(getUniform(name), vec.getX(), vec.getY(), vec.getZ(), vec.getW());
 	}
 	
-	public void setUniformMatrix4f(String name, Matrix4f matrix) {
+	public void set(String name, Matrix4f matrix) {
 		this.lastMatrix = matrix;
 		GL46.glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
 	}
