@@ -3,6 +3,7 @@ package main.java.ulibs.gl.gl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import main.java.ulibs.common.math.Vec2f;
 import main.java.ulibs.common.math.Vec2i;
 import main.java.ulibs.common.utils.ICopyable;
 
@@ -120,11 +121,20 @@ public class QuadData implements ICopyable<QuadData> {
 		return (T) this;
 	}
 	
+	public static float[] createVertex(int x, int y, ZConstant z, int w, int h) {
+		return new float[] { x, y, z.z, x, y + h, z.z, x + w, y + h, z.z, x + w, y, z.z };
+	}
+	
 	public static float[] createVertex(float x, float y, ZConstant z, float w, float h) {
 		return new float[] { x, y, z.z, x, y + h, z.z, x + w, y + h, z.z, x + w, y, z.z };
 	}
 	
 	public static float[] createVertex(Vec2i pos, ZConstant z, Vec2i size) {
+		return new float[] { pos.getX(), pos.getY(), z.z, pos.getX(), pos.getY() + size.getY(), z.z, pos.getX() + size.getX(), pos.getY() + size.getY(), z.z,
+				pos.getX() + size.getX(), pos.getY(), z.z };
+	}
+	
+	public static float[] createVertex(Vec2f pos, ZConstant z, Vec2f size) {
 		return new float[] { pos.getX(), pos.getY(), z.z, pos.getX(), pos.getY() + size.getY(), z.z, pos.getX() + size.getX(), pos.getY() + size.getY(), z.z,
 				pos.getX() + size.getX(), pos.getY(), z.z };
 	}

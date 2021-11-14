@@ -4,14 +4,25 @@ import java.awt.Color;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL46;
+import org.lwjgl.system.MemoryUtil;
+
+import main.java.ulibs.common.math.Vec2i;
+import main.java.ulibs.common.utils.Console;
+import main.java.ulibs.common.utils.Console.WarningType;
+import main.java.ulibs.gl.utils.exceptions.GLException;
+import main.java.ulibs.gl.utils.exceptions.GLException.Reason;
 
 public class GLH {
 	/** GL True */
 	public static final int TRUE = GL46.GL_TRUE;
 	/** GL False */
 	public static final int FALSE = GL46.GL_FALSE;
+	/** GL Null */
+	public static final long NULL = MemoryUtil.NULL;
 	
 	/**
 	 * @param x Viewport's X
@@ -112,5 +123,66 @@ public class GLH {
 	/** @return The GL Version */
 	public static String getVersion() {
 		return GL46.glGetString(GL46.GL_VERSION);
+	}
+	
+	/**
+	 * @param title The title to use for the window
+	 * @param width The width to use for the window
+	 * @param height The height to use for the window
+	 * @return A long representing the window ID
+	 * @throws GLException Throws if the window fails to initialize. Will print stacktrace automatically.
+	 */
+	public static long createWindow(String title, int width, int height) throws GLException {
+		long window = GLFW.glfwCreateWindow(width, height, title, NULL, NULL);
+		if (window == GLH.NULL) {
+			GLException ex = new GLException(Reason.failedToInitWindow);
+			Console.print(WarningType.FatalError, "Failed to initialize Window!", ex);
+			throw ex;
+		}
+		
+		return window;
+	}
+	
+	/**
+	 * @param resizeable Whether or not to allow window resizing
+	 * @return The current monitor's width & height as a {@link Vec2i}
+	 */
+	public static Vec2i setWindowHints(boolean resizeable) {
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, resizeable ? TRUE : FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, TRUE);
+		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+		
+		GLFWVidMode v = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, v.redBits());
+		GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, v.greenBits());
+		GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, v.blueBits());
+		GLFW.glfwWindowHint(GLFW.GLFW_REFRESH_RATE, v.refreshRate());
+		return new Vec2i(v.width(), v.height());
+	}
+	
+	public static void setWindowPos(long window, int x, int y) {
+		GLFW.glfwSetWindowPos(window, x, y);
+	}
+	
+	/**
+	 * 
+	 * @throws GLException Throws if the OpenGL fails to initialize. Will print stacktrace automatically.
+	 */
+	public static void initGL() throws GLException {
+		if (!GLFW.glfwInit()) {
+			GLException ex = new GLException(Reason.failedToInitGL);
+			Console.print(WarningType.FatalError, "Failed to initialize OpenGL!", ex);
+			throw ex;
+		}
+	}
+	
+	public static boolean shouldWindowClose(long window) {
+		return GLFW.glfwWindowShouldClose(window);
+	}
+	
+	public static void swapBuffers(long window) {
+		GLFW.glfwSwapBuffers(window);
 	}
 }
