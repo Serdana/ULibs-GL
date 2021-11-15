@@ -1,6 +1,7 @@
 package main.java.ulibs.gl.gl;
 
 public class ZConstant {
+	public static final ZConstant Z_BACKGROUND = new ZConstant();
 	public static final ZConstant Z_WORLD = new ZConstant();
 	public static final ZConstant Z_WORLD_ENTITY = new ZConstant();
 	public static final ZConstant Z_WORLD_PLAYER = new ZConstant();
