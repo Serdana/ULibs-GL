@@ -67,6 +67,9 @@ public class GLH {
 		GL.createCapabilities();
 	}
 	
+	/** Sets the given {@link Color} as the clear color
+	 * @param color The color to use
+	 */
 	public static void clearColor(Color color) {
 		GL46.glClearColor(color.getRed() / 256f, color.getGreen() / 256f, color.getBlue() / 256f, color.getAlpha() / 256f);
 	}
@@ -162,6 +165,11 @@ public class GLH {
 		return new Vec2i(v.width(), v.height());
 	}
 	
+	/** Sets the window's X/Y position to the given coordinates
+	 * @param window The window to set position
+	 * @param x The X coordinate to set the window to
+	 * @param y The Y coordinate to set the window to
+	 */
 	public static void setWindowPos(long window, int x, int y) {
 		GLFW.glfwSetWindowPos(window, x, y);
 	}
@@ -178,6 +186,7 @@ public class GLH {
 		}
 	}
 	
+	/** True if the window should close, otherwise false */
 	public static boolean shouldWindowClose(long window) {
 		return GLFW.glfwWindowShouldClose(window);
 	}
