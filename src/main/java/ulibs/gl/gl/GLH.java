@@ -191,7 +191,52 @@ public class GLH {
 		return GLFW.glfwWindowShouldClose(window);
 	}
 	
+	public static void swapInterval(int i) {
+		GLFW.glfwSwapInterval(i);
+	}
+	
 	public static void swapBuffers(long window) {
 		GLFW.glfwSwapBuffers(window);
+	}
+	
+	public static void enableWindowDecorations(long window) {
+		GLFW.glfwSetWindowAttrib(window, GLFW.GLFW_DECORATED, TRUE);
+	}
+	
+	public static void disableWindowDecorations(long window) {
+		GLFW.glfwSetWindowAttrib(window, GLFW.GLFW_DECORATED, FALSE);
+	}
+	
+	public static Vec2i getMonitorSize() {
+		GLFWVidMode v = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		return new Vec2i(v.width(), v.height());
+	}
+	
+	public static int getMonitorRefreshRate() {
+		return GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).refreshRate();
+	}
+	
+	public static void setWindowData(long window, int xPos, int yPos, int width, int height, int refreshRate) {
+		GLFW.glfwSetWindowMonitor(window, NULL, xPos, yPos, width, height, refreshRate);
+	}
+	
+	public static void setWindowData(long window, int xPos, int yPos, int width, int height) {
+		setWindowData(window, xPos, yPos, width, height, getMonitorRefreshRate());
+	}
+	
+	public static void setWindowData(long window, Vec2i pos, Vec2i size, int refreshRate) {
+		setWindowData(window, pos.getX(), pos.getY(), size.getX(), size.getY(), refreshRate);
+	}
+	
+	public static void setWindowData(long window, Vec2i pos, Vec2i size) {
+		setWindowData(window, pos, size, getMonitorRefreshRate());
+	}
+	
+	public static void setWindowData(long window, int xPos, int yPos, Vec2i size, int refreshRate) {
+		setWindowData(window, xPos, yPos, size.getX(), size.getY(), refreshRate);
+	}
+	
+	public static void setWindowData(long window, int xPos, int yPos, Vec2i size) {
+		setWindowData(window, xPos, yPos, size, getMonitorRefreshRate());
 	}
 }
