@@ -3,6 +3,7 @@ package main.java.ulibs.gl.math;
 import java.nio.FloatBuffer;
 
 import main.java.ulibs.common.math.Vec2f;
+import main.java.ulibs.common.math.Vec2i;
 import main.java.ulibs.common.math.Vec3f;
 import main.java.ulibs.common.utils.ICopyable;
 import main.java.ulibs.gl.utils.BufferUtils;
@@ -40,6 +41,10 @@ public class Matrix4f implements ICopyable<Matrix4f> {
 	}
 	
 	public static Matrix4f translate(Vec2f vec) {
+		return translate(identity(), new Vec3f(vec.getX(), vec.getY(), 0));
+	}
+	
+	public static Matrix4f translate(Vec2i vec) {
 		return translate(identity(), new Vec3f(vec.getX(), vec.getY(), 0));
 	}
 	
