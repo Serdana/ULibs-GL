@@ -16,7 +16,6 @@ import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.gl.math.Matrix4f;
 
-//TODO make better shader system! idk, make this abstract and add methods to make things easier
 public abstract class Shader {
 	public static final int VERTEX_ATTRIB = 0;
 	public static final int TCOORD_ATTRIB = 1;
@@ -36,10 +35,9 @@ public abstract class Shader {
 		this.name = name;
 		this.id = load(name, internalTitle);
 		this.prMatrix = prMatrix;
-		
 	}
 	
-	public void setup() {
+	public final void setup() {
 		bind();
 		set("projection_matrix", prMatrix);
 		internalSetup();
@@ -48,6 +46,11 @@ public abstract class Shader {
 	
 	/** Don't worry about binding/unbinding shader here! That's being handled elsewhere */
 	protected abstract void internalSetup();
+	
+	/** Don't worry about binding/unbinding shader here! That's being handled elsewhere */
+	public void onResize() {
+		
+	}
 	
 	/** Binds the shader for use */
 	public void bind() {
