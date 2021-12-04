@@ -130,13 +130,19 @@ public class QuadData implements ICopyable<QuadData> {
 	}
 	
 	public static float[] createVertex(Vec2i pos, ZConstant z, Vec2i size) {
-		return new float[] { pos.getX(), pos.getY(), z.z, pos.getX(), pos.getY() + size.getY(), z.z, pos.getX() + size.getX(), pos.getY() + size.getY(), z.z,
-				pos.getX() + size.getX(), pos.getY(), z.z };
+		return createVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY());
 	}
 	
 	public static float[] createVertex(Vec2f pos, ZConstant z, Vec2f size) {
-		return new float[] { pos.getX(), pos.getY(), z.z, pos.getX(), pos.getY() + size.getY(), z.z, pos.getX() + size.getX(), pos.getY() + size.getY(), z.z,
-				pos.getX() + size.getX(), pos.getY(), z.z };
+		return createVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY());
+	}
+	
+	public static float[] createVertex(Vec2f pos, ZConstant z, Vec2i size) {
+		return createVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY());
+	}
+	
+	public static float[] createVertex(Vec2i pos, ZConstant z, Vec2f size) {
+		return createVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY());
 	}
 	
 	public float[] getVertices() {
@@ -149,6 +155,10 @@ public class QuadData implements ICopyable<QuadData> {
 	
 	public float[] getTcs() {
 		return tcs;
+	}
+	
+	public boolean isEmpty() {
+		return size == 0;
 	}
 	
 	@Override
