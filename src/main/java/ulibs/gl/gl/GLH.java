@@ -191,8 +191,8 @@ public class GLH {
 		return GLFW.glfwWindowShouldClose(window);
 	}
 	
-	public static void swapInterval(int i) {
-		GLFW.glfwSwapInterval(i);
+	public static void setVSync(boolean vsync) {
+		GLFW.glfwSwapInterval(vsync ? 1 : 0);
 	}
 	
 	public static void swapBuffers(long window) {

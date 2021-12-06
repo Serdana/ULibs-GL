@@ -3,8 +3,11 @@ package main.java.ulibs.gl.gl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import main.java.ulibs.common.helpers.MathH;
 import main.java.ulibs.common.math.Vec2f;
 import main.java.ulibs.common.math.Vec2i;
+import main.java.ulibs.common.utils.Console;
+import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.common.utils.ICopyable;
 
 public class QuadData implements ICopyable<QuadData> {
@@ -121,12 +124,57 @@ public class QuadData implements ICopyable<QuadData> {
 		return (T) this;
 	}
 	
-	public static float[] createVertex(int x, int y, ZConstant z, int w, int h) {
-		return new float[] { x, y, z.z, x, y + h, z.z, x + w, y + h, z.z, x + w, y, z.z };
+	public static float[] createCenteredVertex(float x, float y, ZConstant z, float w, float h, float xo, float yo) {
+		if (!MathH.within(xo, x, w) || !MathH.within(yo, y, h)) {
+			Console.print(WarningType.Error, "xo/yo cannot be less than x/y or more than w/h!");
+			return new float[0];
+		}
+		
+		return new float[] { x - xo, y - yo, z.z, x - xo, y + h - yo, z.z, x + w - xo, y + h - yo, z.z, x + w - xo, y - yo, z.z };
+	}
+	
+	public static float[] createCenteredVertex(int x, int y, ZConstant z, int w, int h, int xo, int yo) {
+		return createCenteredVertex((float) x, (float) y, z, (float) w, (float) h, (float) xo, (float) yo);
+	}
+	
+	public static float[] createCenteredVertex(Vec2i pos, ZConstant z, Vec2i size, Vec2i origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2f pos, ZConstant z, Vec2f size, Vec2i origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2f pos, ZConstant z, Vec2i size, Vec2i origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2i pos, ZConstant z, Vec2f size, Vec2i origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2i pos, ZConstant z, Vec2i size, Vec2f origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2f pos, ZConstant z, Vec2f size, Vec2f origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2f pos, ZConstant z, Vec2i size, Vec2f origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
+	}
+	
+	public static float[] createCenteredVertex(Vec2i pos, ZConstant z, Vec2f size, Vec2f origin) {
+		return createCenteredVertex(pos.getX(), pos.getY(), z, size.getX(), size.getY(), origin.getX(), origin.getY());
 	}
 	
 	public static float[] createVertex(float x, float y, ZConstant z, float w, float h) {
 		return new float[] { x, y, z.z, x, y + h, z.z, x + w, y + h, z.z, x + w, y, z.z };
+	}
+	
+	public static float[] createVertex(int x, int y, ZConstant z, int w, int h) {
+		return createVertex((float) x, (float) y, z, (float) w, (float) h);
 	}
 	
 	public static float[] createVertex(Vec2i pos, ZConstant z, Vec2i size) {

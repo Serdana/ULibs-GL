@@ -5,7 +5,9 @@ public class ZConstant {
 	public static final ZConstant Z_WORLD = new ZConstant();
 	public static final ZConstant Z_WORLD_OVERLAY_0 = new ZConstant();
 	public static final ZConstant Z_WORLD_ENTITY = new ZConstant();
+	public static final ZConstant Z_WORLD_PARTICLE_0 = new ZConstant();
 	public static final ZConstant Z_WORLD_PLAYER = new ZConstant();
+	public static final ZConstant Z_WORLD_PARTICLE_1 = new ZConstant();
 	public static final ZConstant Z_WORLD_OVERLAY_1 = new ZConstant();
 	public static final ZConstant Z_HUD_BACKGROUND = new ZConstant();
 	public static final ZConstant Z_HUD_BASE = new ZConstant();

@@ -155,6 +155,22 @@ public class KeyedVertexArray<T> {
 		GL46.glDrawElements(GL46.GL_TRIANGLES, count, GL46.GL_UNSIGNED_INT, 0);
 	}
 	
+	public void drawOnce() {
+		bind();
+		draw();
+		unbind();
+	}
+	
+	public void reset() {
+		wasSetup = false;
+		vao = 0;
+		vbo = 0;
+		ibo = 0;
+		tbo = 0;
+		count = 0;
+		map.clear();
+	}
+	
 	private float[] getVertices() {
 		int verticiesSize = 0;
 		for (QuadData l : map.values()) {
