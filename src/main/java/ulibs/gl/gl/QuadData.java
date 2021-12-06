@@ -103,7 +103,7 @@ public class QuadData implements ICopyable<QuadData> {
 	@SuppressWarnings("unchecked")
 	private <T extends QuadData> T addVertices(float[] vertices) {
 		this.vertices = combine(this.vertices, vertices);
-		size++;
+		size += vertices.length / 12;
 		return (T) this;
 	}
 	
