@@ -4,7 +4,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL46;
 
@@ -25,63 +24,76 @@ public class KeyedVertexArray<T> {
 	
 	/** Sets vertices for the given key
 	 * @param t The key to use
-	 * @param vertices The vertices to set to the given key
+	 * @param data The QuadData to set to the given key
+	 * @return self
 	 */
-	public void setObjectVertices(T t, float[] vertices) {
+	public KeyedVertexArray<T> setObjectQuadData(T t, QuadData data) {
+		if (!map.containsKey(t)) {
+			map.put(t, data);
+			return this;
+		}
+		
+		map.get(t).setAll(data);
+		return this;
+	}
+	
+	/** Sets vertices/indices/tcs for the given key
+	 * @param t The key to use
+	 * @param vertices The vertices to set to the given key
+	 * @param indices The indices to set to the given key
+	 * @param tcs The texture coords to set to the given key
+	 * @return self
+	 */
+	public KeyedVertexArray<T> setObjectQuadData(T t, float[] vertices, int[] indices, float[] tcs) {
+		QuadData data = new QuadData().addAll(vertices, indices, tcs);
+		if (!map.containsKey(t)) {
+			map.put(t, data);
+		}
+		
+		map.get(t).setAll(data);
+		return this;
+	}
+	
+	/** Sets vertices for the given key
+	 * @param t The key to use
+	 * @param vertices The vertices to set to the given key
+	 * @return self
+	 */
+	public KeyedVertexArray<T> setObjectVertices(T t, float[] vertices) {
+		if (!map.containsKey(t)) {
+			map.put(t, new QuadData());
+		}
+		
 		map.get(t).setVertices(vertices);
+		return this;
 	}
 	
 	/** Sets indices for the given key
 	 * @param t The key to use
 	 * @param indices The indices to set to the given key
+	 * @return self
 	 */
-	public void setObjectIndices(T t, int[] indices) {
-		int n = 0;
-		for (Entry<T, QuadData> pair : map.entrySet()) {
-			if (pair.getKey().equals(t)) {
-				break;
-			}
-			n++;
+	public KeyedVertexArray<T> setObjectIndices(T t, int[] indices) {
+		if (!map.containsKey(t)) {
+			map.put(t, new QuadData());
 		}
 		
-		int[] ids = indices.clone();
-		for (int i = 0; i < ids.length; i++) {
-			ids[i] = ids[i] + n * 4;
-		}
-		
-		map.get(t).setIndices(ids);
+		map.get(t).setIndices(indices);
+		return this;
 	}
 	
 	/** Sets texture coords for the given key
 	 * @param t The key to use
 	 * @param tcs The texture coords to set to the given key
+	 * @return self
 	 */
-	public void setObjectTcs(T t, float[] tcs) {
-		map.get(t).setTcs(tcs);
-	}
-	
-	/** Adds a new key to the map
-	 * @param t The key to use
-	 * @param data The data to set to the given key
-	 */
-	public void addNewObject(T t, QuadData data) {
-		int[] ids = data.indices.clone();
-		for (int i = 0; i < ids.length; i++) {
-			ids[i] = ids[i] + map.size() * 4;
+	public KeyedVertexArray<T> setObjectTcs(T t, float[] tcs) {
+		if (!map.containsKey(t)) {
+			map.put(t, new QuadData());
 		}
 		
-		data.setIndices(ids);
-		map.put(t, data);
-	}
-	
-	/** Adds a new key to the map
-	 * @param t The key to use
-	 * @param vertices The vertices to set to the given key
-	 * @param indices The indices to set to the given key
-	 * @param tcs The texture coords to set to the given key
-	 */
-	public void addNewObject(T t, float[] vertices, int[] indices, float[] tcs) {
-		addNewObject(t, new QuadData().addAll(vertices, indices, tcs));
+		map.get(t).setTcs(tcs);
+		return this;
 	}
 	
 	/** Removed the given key from the map
@@ -181,6 +193,7 @@ public class KeyedVertexArray<T> {
 		for (QuadData l : map.values()) {
 			buf.put(l.vertices);
 		}
+		
 		buf.flip();
 		return buf.array();
 	}
@@ -190,10 +203,19 @@ public class KeyedVertexArray<T> {
 		for (QuadData l : map.values()) {
 			indicesSize += l.indices.length;
 		}
+		
 		IntBuffer buf = IntBuffer.allocate(indicesSize);
+		int size = 0;
 		for (QuadData l : map.values()) {
-			buf.put(l.indices);
+			int[] ids = l.indices.clone();
+			for (int i = 0; i < ids.length; i++) {
+				ids[i] = ids[i] + size * 4;
+			}
+			
+			buf.put(ids);
+			size += l.indices.length / 6;
 		}
+		
 		buf.flip();
 		return buf.array();
 	}
@@ -203,10 +225,12 @@ public class KeyedVertexArray<T> {
 		for (QuadData l : map.values()) {
 			tcsSize += l.tcs.length;
 		}
+		
 		FloatBuffer buf = FloatBuffer.allocate(tcsSize);
 		for (QuadData l : map.values()) {
 			buf.put(l.tcs);
 		}
+		
 		buf.flip();
 		return buf.array();
 	}

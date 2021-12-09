@@ -15,6 +15,8 @@ import main.java.ulibs.common.math.Vec4f;
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.gl.math.Matrix4f;
+import main.java.ulibs.gl.utils.exceptions.GLException;
+import main.java.ulibs.gl.utils.exceptions.GLException.Reason;
 
 public abstract class Shader {
 	public static final int VERTEX_ATTRIB = 0;
@@ -23,6 +25,7 @@ public abstract class Shader {
 	public final String name;
 	public final int id;
 	private final Matrix4f prMatrix;
+	private boolean wasSetup;
 	
 	private final Map<String, Integer> locationCache = new HashMap<String, Integer>();
 	
@@ -38,6 +41,7 @@ public abstract class Shader {
 	}
 	
 	public final void setup() {
+		wasSetup = true;
 		bind();
 		set("projection_matrix", prMatrix);
 		internalSetup();
@@ -54,6 +58,11 @@ public abstract class Shader {
 	
 	/** Binds the shader for use */
 	public void bind() {
+		if (!wasSetup) {
+			Console.print(WarningType.FatalError, "Tried to use shader '" + name + "' but it was never setup!", new GLException(Reason.notSetupShader));
+			return;
+		}
+		
 		GL46.glUseProgram(id);
 	}
 	

@@ -49,7 +49,7 @@ public class QuadData implements ICopyable<QuadData> {
 	}
 	
 	public <T extends QuadData> T addVerticesWithDefaults(float[] vertices) {
-		return addDefaultIndices().addDefaultTcs().addVertices(vertices);
+		return addDefaultIndices().addVertices(vertices).addDefaultTcs();
 	}
 	
 	public <T extends QuadData> T addVerticesAndSafeIndices(float[] vertices, int[] indices) {
