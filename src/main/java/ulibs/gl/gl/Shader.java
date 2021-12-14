@@ -118,14 +118,14 @@ public abstract class Shader {
 		
 		GL46.glCompileShader(vertID);
 		if (GL46.glGetShaderi(vertID, GL46.GL_COMPILE_STATUS) == GLH.FALSE) {
-			Console.print(WarningType.Error, "Failed to compile vertex shader!");
+			Console.print(WarningType.Error, "Failed to compile vertex shader called '" + name + "'!");
 			Console.print(WarningType.Error, GL46.glGetShaderInfoLog(vertID));
 			return -1;
 		}
 		
 		GL46.glCompileShader(fragID);
 		if (GL46.glGetShaderi(fragID, GL46.GL_COMPILE_STATUS) == GLH.FALSE) {
-			Console.print(WarningType.Error, "Failed to compile fragment shader!");
+			Console.print(WarningType.Error, "Failed to compile fragment shader '" + name + "'!");
 			Console.print(WarningType.Error, GL46.glGetShaderInfoLog(fragID));
 			return -1;
 		}

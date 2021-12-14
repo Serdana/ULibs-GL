@@ -1,5 +1,7 @@
 package main.java.ulibs.gl.gl;
 
+//TODO write docs
+@SuppressWarnings("javadoc")
 public class ZConstant {
 	public static final ZConstant Z_BACKGROUND = new ZConstant();
 	public static final ZConstant Z_WORLD = new ZConstant();
