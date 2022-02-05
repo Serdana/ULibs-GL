@@ -8,16 +8,18 @@ import main.java.ulibs.gl.utils.BufferUtils;
 import main.java.ulibs.gl.utils.exceptions.GLException;
 import main.java.ulibs.gl.utils.exceptions.GLException.Reason;
 
-public class VertexArray extends QuadData {
+public class VertexArray extends VertexArrayData {
 	protected int vao, vbo, ibo, tbo;
 	protected int count;
-	
 	protected boolean wasSetup = false;
 	
 	/** Sets up everything to be ready for rendering
 	 * <br>
 	 * Must be called before using! */
 	public void setup() {
+		float[] vertices = getVertices();
+		float[] tcs = getTcs();
+		int[] indices = getIndices();
 		count = indices.length;
 		
 		if (!wasSetup) {

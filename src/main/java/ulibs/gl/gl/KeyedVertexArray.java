@@ -9,90 +9,42 @@ import org.lwjgl.opengl.GL46;
 
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
+import main.java.ulibs.gl.gl.geometry.GeoData;
 import main.java.ulibs.gl.utils.BufferUtils;
 import main.java.ulibs.gl.utils.exceptions.GLException;
 import main.java.ulibs.gl.utils.exceptions.GLException.Reason;
 
 /** Similar to {@link VertexArray} but instead has control over the elements inside
  * @author -Unknown-
- * @param <T> The Key to use for the {@link QuadData} map
+ * @param <T> The Key to use for the {@link VertexArrayData} map
  */
 public class KeyedVertexArray<T> {
-	private final Map<T, QuadData> map = new LinkedHashMap<T, QuadData>();
+	private final Map<T, VertexArrayData> map = new LinkedHashMap<T, VertexArrayData>();
 	private int vao, vbo, ibo, tbo, count;
-	private boolean wasSetup = false;
+	private boolean wasSetup = false, requiresCacheReset = true;
 	
-	/** Sets vertices for the given key
-	 * @param t The key to use
-	 * @param data The QuadData to set to the given key
-	 * @return self
-	 */
-	public KeyedVertexArray<T> setObjectQuadData(T t, QuadData data) {
+	private float[] verticesCache = new float[0], tcsCache = new float[0];
+	private int[] indicesCache = new int[0];
+	
+	public KeyedVertexArray<T> setObjectData(T t, VertexArrayData data) {
 		if (!map.containsKey(t)) {
 			map.put(t, data);
 			return this;
 		}
 		
-		map.get(t).setAll(data);
+		map.get(t).set(data);
+		requiresCacheReset = true;
 		return this;
 	}
 	
-	/** Sets vertices/indices/tcs for the given key
-	 * @param t The key to use
-	 * @param vertices The vertices to set to the given key
-	 * @param indices The indices to set to the given key
-	 * @param tcs The texture coords to set to the given key
-	 * @return self
-	 */
-	public KeyedVertexArray<T> setObjectQuadData(T t, float[] vertices, int[] indices, float[] tcs) {
-		QuadData data = new QuadData().addAll(vertices, indices, tcs);
+	public KeyedVertexArray<T> setObjectData(T t, GeoData geodata) {
+		VertexArrayData data = new VertexArrayData().add(geodata);
 		if (!map.containsKey(t)) {
 			map.put(t, data);
 		}
 		
-		map.get(t).setAll(data);
-		return this;
-	}
-	
-	/** Sets vertices for the given key
-	 * @param t The key to use
-	 * @param vertices The vertices to set to the given key
-	 * @return self
-	 */
-	public KeyedVertexArray<T> setObjectVertices(T t, float[] vertices) {
-		if (!map.containsKey(t)) {
-			map.put(t, new QuadData());
-		}
-		
-		map.get(t).setVertices(vertices);
-		return this;
-	}
-	
-	/** Sets indices for the given key
-	 * @param t The key to use
-	 * @param indices The indices to set to the given key
-	 * @return self
-	 */
-	public KeyedVertexArray<T> setObjectIndices(T t, int[] indices) {
-		if (!map.containsKey(t)) {
-			map.put(t, new QuadData());
-		}
-		
-		map.get(t).setIndices(indices);
-		return this;
-	}
-	
-	/** Sets texture coords for the given key
-	 * @param t The key to use
-	 * @param tcs The texture coords to set to the given key
-	 * @return self
-	 */
-	public KeyedVertexArray<T> setObjectTcs(T t, float[] tcs) {
-		if (!map.containsKey(t)) {
-			map.put(t, new QuadData());
-		}
-		
-		map.get(t).setTcs(tcs);
+		map.get(t).set(data);
+		requiresCacheReset = true;
 		return this;
 	}
 	
@@ -101,6 +53,7 @@ public class KeyedVertexArray<T> {
 	 */
 	public void removeObject(int t) {
 		map.remove(t);
+		requiresCacheReset = true;
 	}
 	
 	/** Sets up everything to be ready for rendering
@@ -181,57 +134,89 @@ public class KeyedVertexArray<T> {
 		tbo = 0;
 		count = 0;
 		map.clear();
+		requiresCacheReset = true;
 	}
 	
 	private float[] getVertices() {
-		int verticiesSize = 0;
-		for (QuadData l : map.values()) {
-			verticiesSize += l.vertices.length;
+		if (requiresCacheReset) {
+			resetCache();
 		}
-		
-		FloatBuffer buf = FloatBuffer.allocate(verticiesSize);
-		for (QuadData l : map.values()) {
-			buf.put(l.vertices);
-		}
-		
-		buf.flip();
-		return buf.array();
+		return verticesCache;
 	}
 	
 	private int[] getIndices() {
-		int indicesSize = 0;
-		for (QuadData l : map.values()) {
-			indicesSize += l.indices.length;
+		if (requiresCacheReset) {
+			resetCache();
 		}
-		
-		IntBuffer buf = IntBuffer.allocate(indicesSize);
-		int size = 0;
-		for (QuadData l : map.values()) {
-			int[] ids = l.indices.clone();
-			for (int i = 0; i < ids.length; i++) {
-				ids[i] = ids[i] + size * 4;
-			}
-			
-			buf.put(ids);
-			size += l.indices.length / 6;
-		}
-		
-		buf.flip();
-		return buf.array();
+		return indicesCache;
 	}
 	
 	private float[] getTcs() {
+		if (requiresCacheReset) {
+			resetCache();
+		}
+		return tcsCache;
+	}
+	
+	private void resetCache() {
+		requiresCacheReset = false;
+		
+		int verticiesSize = 0;
+		for (VertexArrayData data : map.values()) {
+			for (GeoData gd : data.datas) {
+				verticiesSize += gd.vertices.length;
+			}
+		}
+		
+		FloatBuffer buf0 = FloatBuffer.allocate(verticiesSize);
+		for (VertexArrayData data : map.values()) {
+			for (GeoData gd : data.datas) {
+				buf0.put(gd.vertices);
+			}
+		}
+		
+		buf0.flip();
+		verticesCache = buf0.array();
+		
+		int indicesSize = 0;
+		for (VertexArrayData data : map.values()) {
+			for (GeoData gd : data.datas) {
+				indicesSize += gd.indices.length;
+			}
+		}
+		
+		IntBuffer buf1 = IntBuffer.allocate(indicesSize);
+		int count = 0;
+		for (VertexArrayData data : map.values()) {
+			for (GeoData gd : data.datas) {
+				int[] ids = gd.indices.clone();
+				for (int i = 0; i < ids.length; i++) {
+					ids[i] = ids[i] + count * 4;
+				}
+				
+				buf1.put(ids);
+				count++;
+			}
+		}
+		
+		buf1.flip();
+		indicesCache = buf1.array();
+		
 		int tcsSize = 0;
-		for (QuadData l : map.values()) {
-			tcsSize += l.tcs.length;
+		for (VertexArrayData data : map.values()) {
+			for (GeoData gd : data.datas) {
+				tcsSize += gd.tcs.length;
+			}
 		}
 		
-		FloatBuffer buf = FloatBuffer.allocate(tcsSize);
-		for (QuadData l : map.values()) {
-			buf.put(l.tcs);
+		FloatBuffer buf2 = FloatBuffer.allocate(tcsSize);
+		for (VertexArrayData data : map.values()) {
+			for (GeoData gd : data.datas) {
+				buf2.put(gd.tcs);
+			}
 		}
 		
-		buf.flip();
-		return buf.array();
+		buf2.flip();
+		tcsCache = buf2.array();
 	}
 }
