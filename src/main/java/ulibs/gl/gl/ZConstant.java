@@ -1,6 +1,8 @@
 package main.java.ulibs.gl.gl;
 
-//TODO write docs
+/** Just a wrapper for a float. Allows each Z level to have a name for easier usage.
+ * @author -Unknown-
+ */
 @SuppressWarnings("javadoc")
 public class ZConstant {
 	public static final ZConstant Z_BACKGROUND = new ZConstant();
@@ -23,6 +25,7 @@ public class ZConstant {
 	
 	private static float zz = 0;
 	
+	/** The Z level */
 	public final float z;
 	
 	private ZConstant() {
@@ -30,7 +33,16 @@ public class ZConstant {
 		zz += 0.1f;
 	}
 	
+	/** @param z A float to set the Z level to */
 	public ZConstant(float z) {
 		this.z = z;
+	}
+	
+	/**
+	 * @param z A float to add to the existing Z
+	 * @return a new ZConstant with the current Z + given Z
+	 */
+	public ZConstant add(float z) {
+		return new ZConstant(this.z + z);
 	}
 }

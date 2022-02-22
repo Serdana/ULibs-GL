@@ -2,10 +2,8 @@ package main.java.ulibs.gl.math;
 
 import java.nio.FloatBuffer;
 
-import main.java.ulibs.common.math.Vec2f;
-import main.java.ulibs.common.math.Vec2i;
-import main.java.ulibs.common.math.Vec3f;
-import main.java.ulibs.common.math.Vec3i;
+import main.java.ulibs.common.math.IVec2;
+import main.java.ulibs.common.math.IVec3;
 import main.java.ulibs.common.utils.ICopyable;
 import main.java.ulibs.gl.utils.BufferUtils;
 
@@ -36,52 +34,28 @@ public class Matrix4f implements ICopyable<Matrix4f> {
 		return mat;
 	}
 	
-	public static Matrix4f newTranslate(Vec2i vec) {
-		return translate(Matrix4f.identity(), vec.getX(), vec.getY(), 0);
+	public static Matrix4f translate(Matrix4f mat, IVec2 vec) {
+		return translate(mat, vec.xFloat(), vec.yFloat(), 0);
 	}
 	
-	public static Matrix4f newTranslate(Vec2f vec) {
-		return translate(Matrix4f.identity(), vec.getX(), vec.getY(), 0);
+	public static Matrix4f translate(Matrix4f mat, IVec3 vec) {
+		return translate(mat, vec.xFloat(), vec.yFloat(), vec.zFloat());
 	}
 	
-	public static Matrix4f newTranslate(Vec3i vec) {
-		return translate(Matrix4f.identity(), vec.getX(), vec.getY(), vec.getZ());
+	public static Matrix4f newTranslate(IVec2 vec) {
+		return translate(Matrix4f.identity(), vec.xFloat(), vec.yFloat(), 0);
 	}
 	
-	public static Matrix4f newTranslate(Vec3f vec) {
-		return translate(Matrix4f.identity(), vec.getX(), vec.getY(), vec.getZ());
+	public static Matrix4f newTranslate(IVec3 vec) {
+		return translate(Matrix4f.identity(), vec.xFloat(), vec.yFloat(), vec.zFloat());
 	}
 	
-	public static Matrix4f translate(Matrix4f mat, Vec2i vec) {
-		return translate(mat, vec.getX(), vec.getY(), 0);
+	public Matrix4f translate(IVec2 vec) {
+		return translate(this, vec.xFloat(), vec.yFloat(), 0);
 	}
 	
-	public static Matrix4f translate(Matrix4f mat, Vec2f vec) {
-		return translate(mat, vec.getX(), vec.getY(), 0);
-	}
-	
-	public static Matrix4f translate(Matrix4f mat, Vec3i vec) {
-		return translate(mat, vec.getX(), vec.getY(), vec.getZ());
-	}
-	
-	public static Matrix4f translate(Matrix4f mat, Vec3f vec) {
-		return translate(mat, vec.getX(), vec.getY(), vec.getZ());
-	}
-	
-	public Matrix4f translate(Vec2i vec) {
-		return translate(this, vec.getX(), vec.getY(), 0);
-	}
-	
-	public Matrix4f translate(Vec2f vec) {
-		return translate(this, vec.getX(), vec.getY(), 0);
-	}
-	
-	public Matrix4f translate(Vec3i vec) {
-		return translate(this, vec.getX(), vec.getY(), vec.getZ());
-	}
-	
-	public Matrix4f translate(Vec3f vec) {
-		return translate(this, vec.getX(), vec.getY(), vec.getZ());
+	public Matrix4f translate(IVec3 vec) {
+		return translate(this, vec.xFloat(), vec.yFloat(), vec.zFloat());
 	}
 	
 	public static Matrix4f rotate(Matrix4f mat, float angle) {
