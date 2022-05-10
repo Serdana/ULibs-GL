@@ -27,7 +27,7 @@ public class Matrix4f implements ICopyable<Matrix4f> {
 		return mat;
 	}
 	
-	public static Matrix4f translate(Matrix4f mat, float x, float y, float z) {
+	private static Matrix4f iTranslate(Matrix4f mat, float x, float y, float z) {
 		mat.elements[0 + 3 * 4] += x;
 		mat.elements[1 + 3 * 4] += y;
 		mat.elements[2 + 3 * 4] += z;
@@ -35,27 +35,51 @@ public class Matrix4f implements ICopyable<Matrix4f> {
 	}
 	
 	public static Matrix4f translate(Matrix4f mat, IVec2 vec) {
-		return translate(mat, vec.xFloat(), vec.yFloat(), 0);
+		return iTranslate(mat, vec.xFloat(), vec.yFloat(), 0);
 	}
 	
 	public static Matrix4f translate(Matrix4f mat, IVec3 vec) {
-		return translate(mat, vec.xFloat(), vec.yFloat(), vec.zFloat());
+		return iTranslate(mat, vec.xFloat(), vec.yFloat(), vec.zFloat());
+	}
+	
+	public static Matrix4f translate(Matrix4f mat, float x, float y) {
+		return iTranslate(mat, x, y, 0);
+	}
+	
+	public static Matrix4f translate(Matrix4f mat, float x, float y, float z) {
+		return iTranslate(mat, x, y, z);
 	}
 	
 	public static Matrix4f newTranslate(IVec2 vec) {
-		return translate(Matrix4f.identity(), vec.xFloat(), vec.yFloat(), 0);
+		return iTranslate(Matrix4f.identity(), vec.xFloat(), vec.yFloat(), 0);
 	}
 	
 	public static Matrix4f newTranslate(IVec3 vec) {
-		return translate(Matrix4f.identity(), vec.xFloat(), vec.yFloat(), vec.zFloat());
+		return iTranslate(Matrix4f.identity(), vec.xFloat(), vec.yFloat(), vec.zFloat());
+	}
+	
+	public static Matrix4f newTranslate(float x, float y) {
+		return iTranslate(Matrix4f.identity(), x, y, 0);
+	}
+	
+	public static Matrix4f newTranslate(float x, float y, float z) {
+		return iTranslate(Matrix4f.identity(), x, y, z);
 	}
 	
 	public Matrix4f translate(IVec2 vec) {
-		return translate(this, vec.xFloat(), vec.yFloat(), 0);
+		return iTranslate(this, vec.xFloat(), vec.yFloat(), 0);
 	}
 	
 	public Matrix4f translate(IVec3 vec) {
-		return translate(this, vec.xFloat(), vec.yFloat(), vec.zFloat());
+		return iTranslate(this, vec.xFloat(), vec.yFloat(), vec.zFloat());
+	}
+	
+	public Matrix4f translate(float x, float y) {
+		return iTranslate(this, x, y, 0);
+	}
+	
+	public Matrix4f translate(float x, float y, float z) {
+		return iTranslate(this, x, y, z);
 	}
 	
 	public static Matrix4f rotate(Matrix4f mat, float angle) {

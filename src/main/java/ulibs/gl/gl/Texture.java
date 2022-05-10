@@ -27,8 +27,7 @@ public class Texture {
 	}
 	
 	private int load(BufferedImage img) {
-		int[] pixels = new int[width * height], data = new int[width * height];
-		img.getRGB(0, 0, width, height, pixels, 0, width);
+		int[] pixels = img.getRGB(0, 0, width, height, new int[width * height], 0, width), data = new int[width * height];
 		
 		for (int i = 0; i < width * height; i++) {
 			int a = (pixels[i] & 0xff000000) >> 24;

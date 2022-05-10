@@ -239,4 +239,8 @@ public class GLH {
 	public static void setWindowData(long window, int xPos, int yPos, Vec2i size) {
 		setWindowData(window, xPos, yPos, size, getMonitorRefreshRate());
 	}
+	
+	public static void pollEvents() {
+		GLFW.glfwPollEvents();
+	}
 }

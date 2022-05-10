@@ -24,26 +24,31 @@ public abstract class Shader {
 	
 	public final String name;
 	public final int id;
-	private final Matrix4f prMatrix;
 	private boolean wasSetup;
+	
+	public final float left, right, top, bottom, near, far;
 	
 	private final Map<String, Integer> locationCache = new HashMap<String, Integer>();
 	
 	/**
 	 * @param name The name of the Shader
 	 * @param internalTitle The internal title package name
-	 * @param prMatrix The projection matrix to use
 	 */
-	public Shader(String name, String internalTitle, Matrix4f prMatrix) {
+	protected Shader(String name, String internalTitle, float left, float right, float bottom, float top, float near, float far) {
 		this.name = name;
 		this.id = load(name, internalTitle);
-		this.prMatrix = prMatrix;
+		this.left = left;
+		this.right = right;
+		this.bottom = bottom;
+		this.top = top;
+		this.near = near;
+		this.far = far;
 	}
 	
 	public final void setup() {
 		wasSetup = true;
 		bind();
-		set("projection_matrix", prMatrix);
+		setProjectionMatrix(Matrix4f.orthographic(left, right, top, bottom, near, far));
 		internalSetup();
 		GLH.unbindShader();
 	}
@@ -64,6 +69,10 @@ public abstract class Shader {
 		}
 		
 		GL46.glUseProgram(id);
+	}
+	
+	public void setProjectionMatrix(Matrix4f matrix) {
+		set("projection_matrix", matrix);
 	}
 	
 	protected void set(String name, int value) {
